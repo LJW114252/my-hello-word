@@ -1,0 +1,20 @@
+pluginManagement {
+    repositories {
+        maven {
+            url 'http://maven.cmpay.com:8081/repository/maven-public/'
+        }
+        gradlePluginPortal()
+    }
+}
+rootProject.name = 'my-hello-word'
+include 'app'
+include 'hello-world-app'
+include 'app:hello-world-app'
+findProject(':app:hello-world-app')?.name = 'hello-world-app'
+include 'interface'
+include 'interface:hello-world-interface'
+findProject(':interface:hello-world-interface')?.name = 'hello-world-interface'
+include 'service'
+include 'service:hello-world-service'
+findProject(':service:hello-world-service')?.name = 'hello-world-service'
+

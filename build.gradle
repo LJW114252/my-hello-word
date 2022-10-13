@@ -1,0 +1,101 @@
+buildscript {
+    ext {
+        // x表示小版本，主要为框架bug修复，依赖snippets统一管理
+        cmpayVersion = '3.0.x'
+        versionMngUrl = "https://gitlab.devops.cmft/publicProject/lemon/snippets/34/raw"
+    }
+    apply from: versionMngUrl
+}
+
+plugins {
+    id 'com.cmpay.platform' version "${cmpayVersion}" apply false
+    id 'io.freefair.maven-optional' version '6.0.0-m2' apply false
+    id 'io.freefair.lombok' version '6.0.0-m2' apply false
+    id 'org.sonarqube' version '2.7'
+}
+
+allprojects {
+    repositories {
+        // 在hosts中配置172.16.50.223 maven.cmpay.com
+        maven { url "http://maven.cmpay.com:8081/repository/maven-public/" }
+    }
+
+    version = '3.0.0-SNAPSHOT'
+    group = 'com.cmpay'
+}
+
+sonarqube {
+    properties {
+        property 'sonar.projectKey', "cmpay:${project.name}"
+    }
+}
+
+subprojects {
+    apply plugin: 'java-library'
+    apply plugin: 'idea'
+    apply plugin: 'com.cmpay.platform'
+    apply plugin: 'io.freefair.maven-optional'
+    apply plugin: 'io.freefair.lombok'
+    apply plugin: 'jacoco'
+
+    dependencies {
+        testImplementation('com.cmpay:lemon-framework-starter-test')
+    }
+
+    compileJava {
+        sourceCompatibility = '1.8'
+        targetCompatibility = '1.8'
+        options.encoding = 'UTF-8'
+    }
+
+    java {
+        withSourcesJar()
+    }
+
+    jacoco {
+        toolVersion = "0.8.5"
+    }
+
+    jacocoTestReport {
+        reports {
+            html.enabled true
+            xml.enabled true
+        }
+    }
+
+    test {
+        useJUnitPlatform()
+        finalizedBy jacocoTestReport
+    }
+}
+
+configure(subprojects.findAll { it.name.matches('\\S*(-interface)\\S*') }) {
+    apply plugin: 'maven-publish'
+    publishing {
+        publications {
+            mavenJava(MavenPublication) {
+                versionMapping {
+                    usage('java-runtime') {
+                        fromResolutionResult()
+                    }
+                }
+                from components.java
+            }
+        }
+        repositories {
+            maven {
+                allowInsecureProtocol = true
+                def releasesRepoUrl = 'http://maven.cmpay.com:8081/repository/cmpay-interface-releases/'
+                def snapshotsRepoUrl = 'http://maven.cmpay.com:8081/repository/cmpay-interface-snapshots/'
+                def nexusUserName = version.endsWith('SNAPSHOT') ? appMavenUserSnap : appMavenUserRelease
+                def nexusPassword = version.endsWith('SNAPSHOT') ? appMavenPasswordSnap : appMavenPasswordRelease
+                url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
+                credentials {
+                    username nexusUserName
+                    password nexusPassword
+                }
+            }
+        }
+    }
+}
+description = 'hello world'

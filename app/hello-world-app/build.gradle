@@ -1,0 +1,16 @@
+apply plugin: 'org.springframework.boot'
+
+dependencies {
+    api project(":service:hello-world-service")
+    api project(":interface:hello-world-interface")
+
+    api("com.cmpay:lemon-framework-starter-cloud")
+    api("com.cmpay:lemon-swagger-starter")
+    implementation("com.cmpay:cmpay-support:3.0.0")
+    // 使用git配置中心
+    api("org.springframework.cloud:spring-cloud-starter-config")
+}
+
+bootJar {
+    mainClass = 'com.cmpay.demo.UserApplication'
+}

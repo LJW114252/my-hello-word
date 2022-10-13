@@ -1,0 +1,35 @@
+server:
+  port: 8080
+  tomcat:
+    accept-count: 10
+    max-connections: 5000
+    max-threads: 500
+
+eureka :
+  instance :
+    preferIpAddress : true
+    metadata-map :
+      zone: zone1
+    lease-renewal-interval-in-seconds : 10
+    lease-expiration-duration-in-seconds : 30
+  client :
+    registryFetchIntervalSeconds : 5
+    region : css
+    availability-zones :
+      css : zone1
+    serviceUrl :
+      zone1 : http://127.0.0.1:9002/eureka/
+
+spring:
+  application:
+    name: my-hello-world
+  # 依赖spring-cloud-starter-config
+  cloud:
+    config:
+      fail-fast: false
+      # 账号密码建议配置到服务环境变量中
+      username: cmpayConfig
+      password: Cmpay@Config
+      discovery:
+        enabled: true
+        serviceId: config-server
