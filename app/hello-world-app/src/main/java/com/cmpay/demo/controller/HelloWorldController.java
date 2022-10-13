@@ -22,6 +22,7 @@ public class HelloWorldController {
     public HelloWorldRspDTO hello(HelloWorldReqDTO reqDTO) {
         HelloWorldRspDTO rspDTO = new HelloWorldRspDTO();
         rspDTO.setMessage("Hello World Wolrd!");
+        System.out.println("hello");
         return rspDTO;
     }
 }
