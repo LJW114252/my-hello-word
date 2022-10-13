@@ -21,7 +21,7 @@ public class HelloWorldController {
     @GetMapping("/hello")
     public HelloWorldRspDTO hello(HelloWorldReqDTO reqDTO) {
         HelloWorldRspDTO rspDTO = new HelloWorldRspDTO();
-        rspDTO.setMessage("Hello World Wolrd!");
+        rspDTO.setMessage("Hello World Wolrd hello!");
         return rspDTO;
     }
 }
